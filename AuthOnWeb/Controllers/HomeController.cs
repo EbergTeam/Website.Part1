@@ -12,19 +12,21 @@ namespace AuthOnWeb.Controllers
 {
     public class HomeController : Controller
     {
+        // получаем контекст данных через механизм внедрения зависимостей (usersContext добавили как сервис)
         readonly UsersContext uc;
-        public HomeController(UsersContext usersContext)
+        public HomeController(UsersContext usersContext) 
         {
             uc = usersContext;
         }
 
-        [HttpGet]
-        public IActionResult Login()
+        // Авторизация/Проверка Usera в БД
+        [HttpGet] // GET-версия, которая отдает представление с формой ввода
+        public IActionResult Login() // отображение формы ввода
         {
             return View();
-        }
-        [HttpPost]
-        public IActionResult Login(string login, string password)
+        }      
+        [HttpPost] // POST-версия, которая принимает введенные в эту форму данные
+        public IActionResult Login(string login, string password) // проверка логина/пароля в БД и выдача соответствущего сообшения
         {
             if (uc.Users.Any(u => u.Login == login && u.Password == password))
             {
@@ -35,15 +37,16 @@ namespace AuthOnWeb.Controllers
                 return Content("Ошибка авторизации");
             }
         }
-        [HttpGet]
+        // Регистрация/Добавление нового User в БД
+        [HttpGet]// GET-версия, которая отдает представление с формой добавления
         public IActionResult Registration()
         {
             return View();
-        }
-        [HttpPost]
-        public IActionResult Registration(string login, string password)
+        }        
+        [HttpPost] // POST-версия, которая принимает введенные в эту форму данные
+        public IActionResult Registration(string login, string password) // проверка логина на существование
         {
-            if (uc.Users.Any(u => u.Login == login))
+            if (uc.Users.Any(u => u.Login == login)) 
             {
                 return Content("Пользователь с такии логином уже существует");
             }
